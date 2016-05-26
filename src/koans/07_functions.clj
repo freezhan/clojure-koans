@@ -32,6 +32,10 @@
   (= 20 ((fn [f] (f 4 5))
            #(* %1 %2)))
 
+  ; other solution
+  ;(= 20 ((fn [f] (f 4 5))
+   ;     (defn f [x y] (* x y))))
+
   "Higher-order functions take function arguments"
   (= 25 (#(% 5)
           (fn [n] (* n n))))
