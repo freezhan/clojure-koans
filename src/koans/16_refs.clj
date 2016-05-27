@@ -6,18 +6,21 @@
 
 (meditations
   "In the beginning, there was a word"
-  (= __ (deref the-world))
+  (= "hello" (deref the-world))
 
+; https://clojuredocs.org/clojure.core/ref
   "You can get the word more succinctly, but it's the same"
-  (= __ @the-world)
+  (= "hello" @the-world)
 
+; https://clojuredocs.org/clojure.core/dosync
+; https://clojuredocs.org/clojure.core/ref-set
   "You can be the change you wish to see in the world."
-  (= __ (do
+  (= "better" (do
           (dosync (ref-set the-world "better"))
           @the-world))
 
   "Alter where you need not replace"
-  (= __ (let [exclamator (fn [x] (str x "!"))]
+  (= "better!!!" (let [exclamator (fn [x] (str x "!"))]
           (dosync
            (alter the-world exclamator)
            (alter the-world exclamator)
@@ -25,12 +28,14 @@
           @the-world))
 
   "Don't forget to do your work in a transaction!"
-  (= 0 (do __
+  (= 0 (do 
+            (dosync (ref-set the-world 0))
            @the-world))
 
+; https://clojuredocs.org/clojure.core/alter
   "Functions passed to alter may depend on the data in the ref"
   (= 20 (do
-          (dosync (alter the-world ___))))
+          (dosync (alter the-world #(+ 20 %)))))
 
   "Two worlds are better than one"
   (= ["Real Jerry" "Bizarro Jerry"]
@@ -39,4 +44,4 @@
           (ref-set the-world {})
           (alter the-world assoc :jerry "Real Jerry")
           (alter bizarro-world assoc :jerry "Bizarro Jerry")
-          __))))
+          (vector (@the-world :jerry) (@bizarro-world :jerry))))))
